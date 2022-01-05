@@ -84,6 +84,31 @@ def create_app(test_config=None):
       print(e)
       abort(422)
 
+  #EDIT FARMER
+  @app.route('/farmers/<int:id>', methods=['PATCH'])
+  def update_farmer(id):
+    try:
+      body = request.get_json()
+      name = body.get('name', None)
+
+      farmer = Farmer.query.filter(Farmer.id == id).one_or_none()
+       
+      if farmer is None: 
+         abort(404)
+
+      farmer.name = name
+
+      farmer.update()
+
+      return jsonify({
+        "success": True,
+        "modified": farmer.format()
+      })
+    
+    except Exception as e: 
+      print(e)
+      abort(422)
+
   # CREATE FOREST
   @app.route('/forests', methods=['POST'])
   def create_forest():
