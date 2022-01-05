@@ -70,9 +70,12 @@ class Forest(db.Model):
     return {
       'id': self.id,
       'name': self.name,
-      'location': self.farmer_id,
-      'trees': [tree.format() for tree in self.trees]
+      'location': self.location,
     }
+
+  def get_trees(self): 
+    return [tree.format() for tree in self.trees]
+    
 
 
 class Farmer(db.Model): 
@@ -98,5 +101,8 @@ class Farmer(db.Model):
     return {
       'id': self.id,
       'name': self.name,
-      'trees': [tree.format() for tree in self.trees]
     }
+
+  def get_trees(self): 
+    return [tree.format() for tree in self.trees]
+    
