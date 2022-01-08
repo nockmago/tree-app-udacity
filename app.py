@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from flask_cors import CORS
 import json
+from auth import requires_auth, AuthError
 from models import setup_db, database_path, Tree, Farmer, Forest, db
 
 def create_app(test_config=None):
@@ -65,7 +66,8 @@ def create_app(test_config=None):
 
   #CREATE FARMER
   @app.route('/farmers', methods=['POST'])
-  def create_farmer():
+  @requires_auth('post:farmer')
+  def create_farmer(payload):
     try:
       body = request.get_json()
       name = body.get('name', None)
@@ -86,7 +88,8 @@ def create_app(test_config=None):
 
   #EDIT FARMER
   @app.route('/farmers/<int:id>', methods=['PATCH'])
-  def update_farmer(id):
+  @requires_auth('patch:farmer')
+  def update_farmer(id, payload):
     try:
       body = request.get_json()
       name = body.get('name', None)
@@ -111,7 +114,8 @@ def create_app(test_config=None):
 
   # CREATE FOREST
   @app.route('/forests', methods=['POST'])
-  def create_forest():
+  @requires_auth('post:forest')
+  def create_forest(payload):
     try:
       body = request.get_json()
       name = body.get('name', None)
@@ -133,7 +137,8 @@ def create_app(test_config=None):
 
   #CREATE TREE
   @app.route('/trees', methods=['POST'])
-  def create_tree():
+  @requires_auth('post:tree')
+  def create_tree(payload):
     try:
       body = request.get_json()
       name = body.get('name', None)
