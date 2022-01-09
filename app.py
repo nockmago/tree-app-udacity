@@ -1,7 +1,7 @@
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
+from sqlalchemy import func, distinct
 from flask_cors import CORS
 import json
 from auth import requires_auth, AuthError
@@ -54,14 +54,41 @@ def create_app(test_config=None):
 
     # Getting tree count by type for selected farmer
     farmer_trees_by_type_query = db.session.query(Tree.name, func.count(Tree.id).label('count')).filter(Tree.farmer_id == id).group_by(Tree.name) 
-    
     tree_count_by_type = {row.name: row.count for row in farmer_trees_by_type_query}
+
 
     return jsonify({
       'success': True,
       'farmer': farmer.format(),
       'trees': tree_count_by_type,
       'number_of_trees': len(farmer.get_trees())
+    })
+
+  # GET ONE FOREST
+  @app.route('/forests/<int:id>', methods=['GET'])
+  def get_forest_id(id): 
+    forest = Forest.query.filter(Forest.id == id).one_or_none()
+    if forest is None: 
+      abort(404)
+
+    # Getting tree count by type for selected forest
+    forest_trees_by_type_query = db.session.query(Tree.name, func.count(Tree.id).label('count')).filter(Tree.forest_id == id).group_by(Tree.name) 
+    tree_count_by_type = {row.name: row.count for row in forest_trees_by_type_query}
+
+    # Getting number of farmers for selected forest
+    farmer_count_query = db.session.query(func.count(distinct(Tree.farmer_id))).filter(Tree.forest_id == id)
+    # try/except block to get the count of unique farmers - better way to do this??
+    try: 
+      farmer_count = farmer_count_query[0][0]
+    except: 
+      farmer_count = 0
+
+    return jsonify({
+      'success': True,
+      'forest': forest.format(),
+      'trees': tree_count_by_type,
+      'number_of_trees': len(forest.get_trees()),
+      'farmer_count': farmer_count
     })
 
   #CREATE FARMER
@@ -192,6 +219,40 @@ def create_app(test_config=None):
     except Exception as e: 
       print(e)
       abort(422)
+    
+  # Error Handling
+  @app.errorhandler(422)
+  def unprocessable(error):
+      return jsonify({
+          "success": False,
+          "error": 422,
+          "message": "unprocessable"
+      }), 422
+
+
+  @app.errorhandler(404)
+  def not_found(error):
+      return jsonify({
+          "success": False,
+          "error": 404,
+          "message": "resource not found"
+      }), 404
+    
+  @app.errorhandler(401)
+  def unauthorized(error):
+      return jsonify({
+          "success": False,
+          "error": 401,
+          "message": "unauthorized action"
+      }), 401
+
+  @app.errorhandler(AuthError)
+  def auth_found(error):
+      return jsonify({
+          "success": False,
+          "error": AuthError,
+          "message": "authentication error"
+      }), AuthError
 
   return app
 
