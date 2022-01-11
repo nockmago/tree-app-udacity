@@ -13,9 +13,9 @@ def create_app(test_config=None):
   CORS(app)
   setup_db(app, database_path)
 
-  @app.route('/')
-  def test_app(): 
-    return "working"
+  @app.route('/', methods=['GET'])
+  def home():
+      return jsonify({'message': 'Hello,hello, World!'})
 
   
   # GET TREES
