@@ -24,7 +24,8 @@ def create_app(test_config=None):
     trees = [tree.format() for tree in Tree.query.all()]
     return jsonify({
       'success': True,
-      'trees': trees
+      'trees': trees,
+      "number_of_trees": len(trees)
     })
 
   # GET FORESTS
@@ -116,7 +117,7 @@ def create_app(test_config=None):
   #EDIT FARMER
   @app.route('/farmers/<int:id>', methods=['PATCH'])
   @requires_auth('patch:farmer')
-  def update_farmer(id, payload):
+  def update_farmer(payload, id):
     try:
       body = request.get_json()
       name = body.get('name', None)
@@ -218,6 +219,8 @@ def create_app(test_config=None):
 
     except Exception as e: 
       print(e)
+      if tree is None: 
+        abort(404)
       abort(422)
     
   # Error Handling

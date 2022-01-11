@@ -26,6 +26,7 @@ def get_token_auth_header():
     """Obtains the Access Token from the Authorization Header
     """
     auth = request.headers.get('Authorization', None)
+    
     if not auth:
         raise AuthError({
             'code': 'authorization_header_missing',
@@ -33,6 +34,7 @@ def get_token_auth_header():
         }, 401)
 
     parts = auth.split()
+
     if parts[0].lower() != 'bearer':
         raise AuthError({
             'code': 'invalid_header',
@@ -53,6 +55,8 @@ def get_token_auth_header():
 
     token = parts[1]
     return token
+
+    
 
 def verify_decode_jwt(token):
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
@@ -118,7 +122,10 @@ def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            token = get_token_auth_header()
+            try: 
+                token = get_token_auth_header()
+            except: 
+                abort(401)
             try: 
                 payload = verify_decode_jwt(token)
                 check_permissions(permission, payload)
