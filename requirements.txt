@@ -13,6 +13,7 @@ greenlet==1.1.2
 idna==3.3
 importlib-metadata==4.10.0
 importlib-resources==5.4.0
+itsdangerous==1.1.0
 Jinja2==2.11.3
 jose==1.0.0
 Mako==1.1.6
@@ -28,3 +29,4 @@ SQLAlchemy==1.4.29
 urllib3==1.26.7
 Werkzeug==1.0.1
 yarg==0.1.9
+zipp==3.7.0
