@@ -259,4 +259,4 @@ def create_app(test_config=None):
 
   return app
 
-APP = create_app()
+app = create_app()
