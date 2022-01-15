@@ -157,7 +157,7 @@ def create_app(test_config=None):
       return jsonify({
         "success": True,
         "created": farmer.format(),
-        "farmers": [farmer.format() for farmer in Farmer.query.all()]
+        "total_farmers": len(Farmer.query.all())
       })
     
     except Exception as e: 
