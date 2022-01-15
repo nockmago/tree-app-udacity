@@ -28,3 +28,23 @@ auth0 = oauth.register(
     },
 )
 
+# Here we're using the /callback route.
+@app.route('/callback')
+def callback_handling():
+    # Handles response from token endpoint
+    auth0.authorize_access_token()
+    resp = auth0.get('userinfo')
+    userinfo = resp.json()
+
+    # Store the user information in flask session.
+    session['jwt_payload'] = userinfo
+    session['profile'] = {
+        'user_id': userinfo['sub'],
+        'name': userinfo['name'],
+        'picture': userinfo['picture']
+    }
+    return redirect('/')
+
+@app.route('/login')
+def login():
+    return auth0.authorize_redirect(redirect_uri='https://tree-app-udacity.herokuapp.com/')
