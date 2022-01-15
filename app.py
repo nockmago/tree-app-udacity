@@ -17,6 +17,7 @@ def create_app(test_config=None):
   oauth = OAuth(app)
   CORS(app)
   setup_db(app, database_path)
+  app.secret_key = os.environ.get("SECRET_KEY")
 
   @app.after_request
   def after_request(response):
