@@ -1,6 +1,5 @@
 # Tree App Capstone Project
 
-
 ## Tree App
 This project is a tree-planting app, it can: 
 
@@ -59,6 +58,20 @@ Certain actions require authorization to be performed. Authorization is granted 
 #### Roles
 - Admin: Can perform all actions
 - Farmer: Can plant trees
+
+#### Login info
+Login endpoint: https://tree-app-udacity.herokuapp.com/login
+Login to get access token: https://tree-app.eu.auth0.com/authorize?audience=tree&response_type=token&client_id=oKWhbpnbNRWsmcY52NgNmbTSTnEyr7vA&redirect_uri=https://tree-app-udacity.herokuapp.com/
+
+Use the following credentials to login as different roles
+
+- Admin
+    - email: admin@test.com
+    - password: Admintest1$
+
+- Farmer
+    - email: farmer@test.com
+    - password: Farmer95$
 
 ### Error Handling
 Errors are returned as JSON objects in the following format:
@@ -157,7 +170,7 @@ The API will return four error types when requests fail:
 }
 ```
 
-#### GET /farmers/id
+#### GET /farmers/{farmer_id}
 - General:
     - Returns the farmer object corresponding to the queried id, success value, total number of farmers planted by that farmers and a count of trees planted by that farmer, grouped by type.
 - Authorization: requires no authorization
@@ -176,7 +189,7 @@ The API will return four error types when requests fail:
 }
 ```
 
-#### GET /forests/id
+#### GET /forests/{forest_id}
 - General:
     - Returns the forest object corresponding to the queried id, success value, total number of farmers planted in that forest, a count of trees planted in that forest grouped by type and a count of farmers that planted in that forest.
 - Authorization: requires no authorization
@@ -215,7 +228,7 @@ The API will return four error types when requests fail:
 }
 ```
 
-#### PATCH /farmers/id
+#### PATCH /farmers/{farmer_id}
 - General:
     - Updates the selected farmer using the submitted name. Returns the updated farmer object and success value.
 - Authorization: 
@@ -291,76 +304,14 @@ The API will return four error types when requests fail:
 }
 ```
 
-#### DELETE /questions/{question_id}
+#### DELETE /trees/{tree_id}
 - General:
-    - Deletes the question of the given ID if it exists. Returns the id of the deleted book, success valuea and total questions.
-- `curl -X DELETE http://127.0.0.1:5000/questions/35`
+    - Deletes the tree of the given ID if it exists. Returns the id of the deleted tree, success value and total trees.
+- `curl -X DELETE https://tree-app-udacity.herokuapp.com/trees/7`
 ```
 {
-  "deleted": 35, 
-  "success": true, 
-  "total_questions": 21
-}
-```
-#### GET /categories/{category_id}/questions
-- General:
-    - Returns a list of question objects, success value, current category and total number of questions belonging to the specified category.
-    - Results are paginated in groups of 10. Include a request argument to choose page number, starting from 1. 
-- Sample: `curl http://127.0.0.1:5000/categories/2/questions`
-```
-{
-  "current_category": {
-    "id": 2, 
-    "type": "Art"
-  }, 
-  "questions": [
-    {
-      "answer": "Escher", 
-      "category": 2, 
-      "difficulty": 1, 
-      "id": 16, 
-      "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?"
-    }, 
-    {
-      "answer": "Mona Lisa", 
-      "category": 2, 
-      "difficulty": 3, 
-      "id": 17, 
-      "question": "La Giaconda is better known as what?"
-    }, 
-    {
-      "answer": "One", 
-      "category": 2, 
-      "difficulty": 4, 
-      "id": 18, 
-      "question": "How many paintings did Van Gogh sell in his lifetime?"
-    }, 
-    {
-      "answer": "Jackson Pollock", 
-      "category": 2, 
-      "difficulty": 2, 
-      "id": 19, 
-      "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
-    }
-  ], 
-  "success": true, 
-  "total_questions": 4
-}
-```
-#### POST /quizzes
-- General:
-    - Gets questions to play the quiz. Takes current category and previous questions as parameters and returns a random question within the given category, if provided, and that is not one of the previous questions and success value.
-    - Previous questions are submitted as a list of ids.
-- Sample `curl -X POST -H "Content-Type: application/json" -d '{"previous_questions": [10,11,12], "current_category": "2"}' http://localhost:3000/quizzes`
-```
-{
-  "question": {
-    "answer": "Edward Scissorhands", 
-    "category": 5, 
-    "difficulty": 3, 
-    "id": 6, 
-    "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
-  }, 
-  "success": true
+    "deleted": 7,
+    "success": true,
+    "total_trees": 6
 }
 ```
