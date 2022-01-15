@@ -18,13 +18,13 @@ def create_app(test_config=None):
   setup_db(app, database_path)
 
   @app.after_request
-    def after_request(response):
-        response.headers.add('Access-Control-Allow-Headers',
-                             'Content-Type,Authorization,true')
-        response.headers.add('Access-Control-Allow-Methods',
-                             'GET,PATCH,POST,DELETE,OPTIONS')
+  def after_request(response):
+    response.headers.add('Access-Control-Allow-Headers',
+                          'Content-Type,Authorization,true')
+    response.headers.add('Access-Control-Allow-Methods',
+                          'GET,PATCH,POST,DELETE,OPTIONS')
 
-        return response
+    return response
   
   auth0 = oauth.register(
     'auth0',
