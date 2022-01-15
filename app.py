@@ -1,17 +1,62 @@
 import os
-from flask import Flask, request, abort, jsonify, redirect
+from flask import Flask, request, abort, jsonify, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, distinct
 from flask_cors import CORS
 import json
 from auth import requires_auth, AuthError
 from models import setup_db, database_path, Tree, Farmer, Forest, db
+from authlib.integrations.flask_client import OAuth
+from six.moves.urllib.parse import urlencode
+from dotenv import load_dotenv, find_dotenv
+from werkzeug.exceptions import HTTPException
 
 def create_app(test_config=None):
   # create and configure the app
   app = Flask(__name__)
   CORS(app)
   setup_db(app, database_path)
+
+  @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Headers',
+                             'Content-Type,Authorization,true')
+        response.headers.add('Access-Control-Allow-Methods',
+                             'GET,PATCH,POST,DELETE,OPTIONS')
+
+        return response
+  
+  auth0 = oauth.register(
+    'auth0',
+    client_id='oKWhbpnbNRWsmcY52NgNmbTSTnEyr7vA',
+    client_secret= os.environ.get("CLIENT_SECRET"),
+    api_base_url='https://tree-app.eu.auth0.com',
+    access_token_url='https://tree-app.eu.auth0.com/oauth/token',
+    authorize_url='https://tree-app.eu.auth0.com/authorize',
+    client_kwargs={
+        'scope': 'openid profile email',
+    },
+  ) 
+
+  @app.route('/callback')
+  def callback_handling():
+      # Handles response from token endpoint
+      auth0.authorize_access_token()
+      resp = auth0.get('userinfo')
+      userinfo = resp.json()
+
+      # Store the user information in flask session.
+      session['jwt_payload'] = userinfo
+      session['profile'] = {
+          'user_id': userinfo['sub'],
+          'name': userinfo['name'],
+          'picture': userinfo['picture']
+      }
+      return redirect('/')
+
+  @app.route('/login')
+  def login():
+      return auth0.authorize_redirect(redirect_uri='https://tree-app-udacity.herokuapp.com/')
 
   # HOMEPAGE
   @app.route('/', methods=['GET'])
