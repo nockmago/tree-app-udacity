@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, redirect
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, distinct
 from flask_cors import CORS
@@ -13,10 +13,14 @@ def create_app(test_config=None):
   CORS(app)
   setup_db(app, database_path)
 
+  # HOMEPAGE
   @app.route('/', methods=['GET'])
   def home():
       return jsonify({'message': 'Hello,hello, World!'})
 
+  @app.route('/login')
+  def login(): 
+    
   
   # GET TREES
   @app.route('/trees', methods=['GET'])
