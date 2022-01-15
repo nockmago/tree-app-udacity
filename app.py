@@ -17,9 +17,6 @@ def create_app(test_config=None):
   @app.route('/', methods=['GET'])
   def home():
       return jsonify({'message': 'Hello,hello, World!'})
-
-  @app.route('/login')
-  def login(): 
     
   
   # GET TREES
