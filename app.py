@@ -82,7 +82,8 @@ def create_app(test_config=None):
     forests = [forest.format() for forest in Forest.query.all()]
     return jsonify({
       'success': True,
-      'forests': forests
+      'forests': forests,
+      'number_of_forests': len(forests)
     })
 
   # GET FARMERS
@@ -91,7 +92,8 @@ def create_app(test_config=None):
     farmers = [farmer.format() for farmer in Farmer.query.all()]
     return jsonify({
       'success': True,
-      'farmers': farmers
+      'farmers': farmers, 
+      'number_of_farmers': len(farmers)
     })
 
   # GET ONE FARMER
@@ -296,6 +298,14 @@ def create_app(test_config=None):
           "error": 401,
           "message": "unauthorized action"
       }), 401
+
+  @app.errorhandler(500)
+  def internal_server_error(error):
+      return jsonify({
+          "success": False,
+          "error": 500,
+          "message": "internal server error"
+      }), 500
 
   @app.errorhandler(AuthError)
   def auth_found(error):
