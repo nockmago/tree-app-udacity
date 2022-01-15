@@ -254,6 +254,7 @@ def create_app(test_config=None):
   
   #DELETE TREE
   @app.route('/trees/<int:id>', methods=['DELETE'])
+  @requires_auth('delete:tree')
   def delete_tree(id): 
     try: 
       tree = Tree.query.filter(Tree.id == id).one_or_none()
