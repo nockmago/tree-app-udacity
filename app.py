@@ -14,6 +14,7 @@ from werkzeug.exceptions import HTTPException
 def create_app(test_config=None):
   # create and configure the app
   app = Flask(__name__)
+  oauth = OAuth(app)
   CORS(app)
   setup_db(app, database_path)
 
