@@ -22,6 +22,12 @@ Create two databases on your local machine:
 
 Setup up an environment variable `DATABASE_URL` containing the path to the `tree` database.
 
+You can do so by running the setup.sh script. Run the following command in your terminal:
+
+```
+source setup.sh
+
+```
 
 
 #### Backend
