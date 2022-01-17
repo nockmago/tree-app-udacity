@@ -14,9 +14,18 @@ The app url is https://tree-app-udacity.herokuapp.com/
 ### Pre-requisites and Local Development 
 Developers using this project should already have Python3, pip and node installed on their local machines.
 
-#### Backend
+#### Database 
+Create two databases on your local machine: 
 
-From the backend folder run `pip install -r requirements.txt`. All required packages are included in the requirements file. 
+- `tree`
+- `tree_test`
+
+Setup up an environment variable `DATABASE_URL` containing the path to the `tree` database.
+
+
+
+#### Backend
+From the app folder run `pip install -r requirements.txt`. All required packages are included in the requirements file. 
 
 To run the application run the following commands from the backend folder: 
 ```
@@ -33,13 +42,22 @@ The app does not have a frontend.
 
 
 ### Tests
-In order to run tests, run the following commands from the backend folder: 
+`
+Two environment variables must be configured for running test: 
+
+- `ADMIN_TOKEN`
+- `FARMER_TOKEN`
+
+These variables are used for testing authorization. See the login info section down below for information on how to get access tokens for different roles.
+
+In order to run tests, run the following commands from the app folder: 
 
 ```
 dropdb tree_test
 createdb tree_test
 psql tree_test < tree.psql
 python test_app.py
+
 ```
 
 The first time you run the tests, omit the dropdb command. 
@@ -53,7 +71,7 @@ All tests are kept in that file and should be maintained as updates are made to 
 - Authentication: This version of the application does not require authentication or API keys.
 
 ### Authorization
-Certain actions require authorization to be performed. Authorization is granted according to the role of user. 
+Certain actions require authorization to be performed. Authorization is granted according to the role of a user. 
 
 #### Roles
 - Admin: Can perform all actions
