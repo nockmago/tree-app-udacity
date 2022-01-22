@@ -9,10 +9,28 @@ This project is a tree-planting app, it can:
 
 The app url is https://tree-app-udacity.herokuapp.com/
 
+## Project Motivation
+I decided to create this kind of application because I believe technology should be used to enhance our symbiosis with nature, not the opposite.
+
 ## Getting Started
 
 ### Pre-requisites and Local Development 
 Developers using this project should already have Python3, pip and node installed on their local machines.
+
+#### Environment Variables
+Run the source.sh script from the main folder to setup environment variables needed to run the project locally: 
+
+```
+source setup.sh
+```
+
+Here is a list of the environment variables needed to run the app: 
+
+- DATABASE_URL - The url pointing to the database powering the app
+- AUTH0_DOMAIN - The domain the app is hosted on Auth0
+- AUTH0_ALGORITHMS - The signature algorithm used by Auth0
+- ADMIN_TOKEN - The token used to send requests to the API with an `admin` role
+- FARMER_TOKEN - The token used to send requests to the API with a `farmer` role
 
 #### Database 
 Create two databases on your local machine: 
@@ -20,14 +38,7 @@ Create two databases on your local machine:
 - `tree`
 - `tree_test`
 
-Setup up an environment variable `DATABASE_URL` containing the path to the `tree` database.
 
-You can do so by running the setup.sh script. Run the following command in your terminal:
-
-```
-source setup.sh
-
-```
 
 
 #### Backend
@@ -48,13 +59,7 @@ The app does not have a frontend.
 
 
 ### Tests
-`
-Two environment variables must be configured for running test: 
 
-- `ADMIN_TOKEN`
-- `FARMER_TOKEN`
-
-These variables are used for testing authorization. See the login info section down below for information on how to get access tokens for different roles.
 
 In order to run tests, run the following commands from the app folder: 
 
@@ -69,6 +74,106 @@ python test_app.py
 The first time you run the tests, omit the dropdb command. 
 
 All tests are kept in that file and should be maintained as updates are made to app functionality. 
+
+## Heroku Deployment 
+
+To deploy this app to Heroku, follow these steps: 
+
+### 1. Install Heroku 
+
+```
+# Install, if Heroku as Standalone
+curl https://cli-assets.heroku.com/install.sh | sh
+# Or, use Homebrew on Mac
+brew tap heroku/brew && brew install heroku
+# Verify the installation
+heroku --version
+# Verify the download
+which heroku
+```
+
+Next, log into Heroku 
+
+``` 
+heroku login -i 
+```
+
+
+### 2. Database Migrations
+
+Run the following commands to initialize the database locally. 
+
+```
+python manage.py db init
+python manage.py db migrate
+python manage.py db upgrade
+
+```
+
+### 3. Deploy to Heroku 
+
+#### 1. Initialize Git
+From the app folder, create a git repository and commit the changes.
+```
+git init
+
+git add . 
+
+git commit -m 'First commit'
+
+```
+
+#### 2. Create an app 
+Create a Heroku app by running the following command:
+
+```
+heroku create [my-app-name] --buildpack heroku/python
+```
+
+#### 3. Add a PostgresSQL Addon to your database 
+Heroku has an addon for apps for a postgresql database instance. Run this code in order to create your database and connect it to your application:
+
+``` 
+heroku addons:create heroku-postgresql:hobby-dev --app [my-app-name]
+```
+
+#### 4. Configure the app 
+
+After the database has been created, you would want to set up the Environment variables in the Heroku Cloud, specific to youor application. Run the following command to fix your DATABASE_URL configuration variable in Heroku.
+
+```
+heroku config --app [my-app-name]
+```
+
+
+#### 5. Set up environment variables in Heroku
+
+When deploying to Heroku, the app will need to read environment variables from the Heroku settings. To set them up, you can go to **Heroku dashboard >> Particular App >> Settings >> Reveal Config Vars** and set up the following variables:
+
+- DATABASE_URL - The url pointing to the database powering the app
+- AUTH0_DOMAIN - The domain the app is hosted on Auth0
+- AUTH0_ALGORITHMS - The signature algorithm used by Auth0
+
+#### 6. Push to heroku
+Run the following command to deploy your app to Heroku. Make sure you have commmited all changes before running it: 
+
+```
+git push heroku master
+```
+
+#### 7. Run database migrations
+Once the app is deployed, run migrations by running: 
+
+```
+python manage.py db init
+python manage.py db migrate
+python manage.py db upgrade
+heroku run python manage.py db upgrade --app [my-app-name]
+```
+
+#### Done!
+
+Your app is now deployed. You can open it from the heroku dashboard or by entering its url in the browser.
 
 ## API Reference
 
