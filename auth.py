@@ -9,24 +9,26 @@ AUTH0_DOMAIN = os.environ['AUTH0_DOMAIN']
 ALGORITHMS = os.environ['AUTH0_ALGORITHMS']
 API_AUDIENCE = os.environ['API_AUDIENCE']
 
-## AuthError Exception
+# AuthError Exception
 '''
 AuthError Exception
 A standardized way to communicate auth failure modes
 '''
+
+
 class AuthError(Exception):
     def __init__(self, error, status_code):
         self.error = error
         self.status_code = status_code
 
 
-## Auth Header
+# Auth Header
 
 def get_token_auth_header():
     """Obtains the Access Token from the Authorization Header
     """
     auth = request.headers.get('Authorization', None)
-    
+
     if not auth:
         raise AuthError({
             'code': 'authorization_header_missing',
@@ -56,7 +58,6 @@ def get_token_auth_header():
     token = parts[1]
     return token
 
-    
 
 def verify_decode_jwt(token):
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
@@ -99,7 +100,8 @@ def verify_decode_jwt(token):
         except jwt.JWTClaimsError:
             raise AuthError({
                 'code': 'invalid_claims',
-                'description': 'Incorrect claims. Please, check the audience and issuer.'
+                'description': 'Incorrect claims. Please, \
+                check the audience and issuer.'
             }, 401)
         except Exception:
             raise AuthError({
@@ -107,29 +109,31 @@ def verify_decode_jwt(token):
                 'description': 'Unable to parse authentication token.'
             }, 400)
     raise AuthError({
-                'code': 'invalid_header',
+        'code': 'invalid_header',
                 'description': 'Unable to find the appropriate key.'
-            }, 400)
+    }, 400)
 
-def check_permissions(permission, payload): 
-    if 'permissions' not in payload: 
+
+def check_permissions(permission, payload):
+    if 'permissions' not in payload:
         abort(400)
-    if permission not in payload['permissions']: 
+    if permission not in payload['permissions']:
         abort(403)
     return True
+
 
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            try: 
+            try:
                 token = get_token_auth_header()
-            except: 
+            except BaseException:
                 abort(401)
-            try: 
+            try:
                 payload = verify_decode_jwt(token)
                 check_permissions(permission, payload)
-            except: 
+            except BaseException:
                 abort(401)
             return f(payload, *args, **kwargs)
 
